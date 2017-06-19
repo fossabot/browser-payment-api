@@ -405,10 +405,9 @@
           (or modifying their cost), removing items that cannot ship to a
           particular address, etc.
         </p>
-        <pre>
-          const payment = new PaymentRequest(methodData, details, options);
-          payment.addEventListener("shippingaddresschange", async ev =&gt; {
-            const {target: request} = ev;
+        <pre class="example">
+          const request = new PaymentRequest(methodData, details, options);
+          request.onshippingaddresschange = async ev =&gt; {
             // Can we ship here?
             try{
               const json = request.shippingAddress.toJSON();
@@ -419,8 +418,7 @@
             }
           });
           // update the total
-          payment.addEventListener("shippingoptionchange", ev =&gt; {
-            const {target: request} = ev;
+          request.onshippingoptionchange = ev =&gt; {
             const shippingOption = shippingOptions.find(option =&gt; option.id === request.id);
             const newTotal = {
               currency: "USD";
