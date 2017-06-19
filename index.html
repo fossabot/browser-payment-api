@@ -361,23 +361,16 @@
           construct a <a>PaymentRequest</a> and request that the browser
           present it to the user:
         </p>
-        <pre class="example" title="Constructing a PaymentRequest object">
+        <pre class="example" title="Constructing a `PaymentRequest`">
           async function doPaymentRequest() {
-            const payment = new PaymentRequest(methodData, details, options);
-            let paymentResponse;
             try {
-              paymentResponse = await payment.show();
-              // paymentResponse.methodName contains the selected payment method.
-              // paymentResponse.details contains a payment method specific
-              // response.
+              const payment = new PaymentRequest(methodData, details, options);
+              const paymentResponse = await payment.show();
               await validateResponse(paymentResponse);
-              paymentResponse.complete("success");
             } catch (err) {
-              console.error("Uh oh, bad payment response!", err.message);
-              paymentResponse.complete("fail");
+              // AbortError, SecurityError
             }
           }
-          // We 
           async function validateResponse(response) {
             try{
               if(await checkAllValuesAreGood(response)){
@@ -390,7 +383,6 @@
               response.complete("unknown");
             }
           }
-          
           doPaymentRequest();
         </pre>
       </section>
@@ -412,9 +404,10 @@
             try{
               const json = request.shippingAddress.toJSON();
               const { shippingOptions, total } = await calculateShipping(json);
-              ev.updateWith({shippingOption, total});
+              const newDetails = Object.assign({}, details, {shippingOptions, total});
+              ev.updateWith(newDetails);
             } catch(err) { 
-              ev.updateWith({error: `Sorry! we can't ship to your address.`})
+              ev.updateWith({error: `Sorry! we can't ship to your address.`});
             }
           });
           // update the total
