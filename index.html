@@ -372,13 +372,13 @@
             }
           }
           async function validateResponse(response) {
-            try{
-              if(await checkAllValuesAreGood(response)){
+            try {
+              if (await checkAllValuesAreGood(response)) {
                 await response.complete("success");
               } else {
                 await response.complete("fail");
               }
-            } catch(err){
+            } catch (err) {
               // Something went wrong... but don't maybe finished ok?
               response.complete("unknown");
             }
